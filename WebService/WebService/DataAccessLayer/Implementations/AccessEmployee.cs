@@ -17,30 +17,64 @@ namespace WebService.DataAccessLayer.Implementations
             using (var connection = new SqlConnection(Config.ConnectionString))
             {
                 connection.Open();
-                var SqlCodeInsert = @"INSERT INTO Employee (Name, Surname, Phone, CompanyId, DepartmentId) 
-                                    OUTPUT INSERTED.Id
-                                    VALUES('@Name', '@Surname', '@Phone', @CompanyId, @DepartmentId)";
-                // Выполняем запрос на добавление и получение ID
-                int? newEmployeeId = connection.QuerySingleOrDefault<int?>(SqlCodeInsert, employee);
 
-                if(newEmployeeId!=null)
+                using (var transaction = connection.BeginTransaction())
                 {
-                    var SqlCodeInsertPassport = @"INSERT INTO Passport (Id, Type, Number)
-                                                  VALUES (@Id, '@Type', '@Number')";
+                    try
+                    {
+                        var SqlCodeInsertEmployee = @"INSERT INTO Employee (Name, Surname, Phone, CompanyId, DepartmentId) 
+                                             OUTPUT INSERTED.Id
+                                             VALUES(@Name, @Surname, @Phone, @CompanyId, @DepartmentId)";
 
-                    passport.Id = (int)newEmployeeId;
-                    connection.Execute(SqlCodeInsertPassport, passport);
+                        int? newEmployeeId = connection.QuerySingleOrDefault<int?>(SqlCodeInsertEmployee, employee, transaction);
+
+                        if (newEmployeeId != null)
+                        {
+                            var SqlCodeInsertPassport = @"INSERT INTO Passport (Id, Type, Number)
+                                                 VALUES (@Id, @Type, @Number)";
+
+                            passport.Id = (int)newEmployeeId;
+                            connection.Execute(SqlCodeInsertPassport, passport, transaction);
+                        }
+
+                        transaction.Commit();
+                        return newEmployeeId;
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        return null;
+                    }
                 }
-
-
-                connection.Close();
-                return newEmployeeId;
             }
         }
 
-        public void DeleteEmployee(int employeeId)
+        public bool DeleteEmployee(int Id)
         {
-            throw new NotImplementedException();
+            using (var connection = new SqlConnection(Config.ConnectionString))
+            {
+                connection.Open();
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var SqlCodeDeleteEmployee = @"DELETE FROM Passport
+                                                WHERE Id = @Id;
+                                             DELETE FROM Employee
+                                                WHERE Id = @Id;";
+
+                    var result = connection.Execute(SqlCodeDeleteEmployee, new { Id }, transaction);
+                    if (result == 2)
+                    {
+                        transaction.Commit();
+                        return true;
+                    }
+                    else
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
+            }
         }
 
         public IEnumerable<Employee> GetEmployeesByCompany(string companyName)
@@ -53,7 +87,7 @@ namespace WebService.DataAccessLayer.Implementations
             throw new NotImplementedException();
         }
 
-        public void UpdateEmployee(int employeeId, Employee employee)
+        public bool UpdateEmployee(int employeeId, Employee employee)
         {
             throw new NotImplementedException();
         }

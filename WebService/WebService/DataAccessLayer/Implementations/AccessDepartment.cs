@@ -19,7 +19,7 @@ namespace WebService.DataAccessLayer.Implementations
 
                 var SqlCode = @"SELECT * FROM Department where Name=@name";
 
-                var department = connection.QuerySingleOrDefault<Department>(SqlCode, name);
+                var department = connection.QuerySingleOrDefault<Department>(SqlCode, new { name });
 
                 connection.Close();
 

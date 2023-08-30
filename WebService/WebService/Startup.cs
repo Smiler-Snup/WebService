@@ -1,18 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.OpenApi.Models;
 using WebService.DataAccessLayer.Implementations;
 using Microsoft.Extensions.Configuration;
 using WebService.DataAccessLayer.Interfaces;
 using WebService.Services.Interfaces;
 using WebService.Services.Implementations;
+using WebService.Services.Validation.Interfaces;
+using WebService.Services.Validation.Implementations;
 
 namespace WebService
 {
@@ -36,10 +33,11 @@ namespace WebService
             services.AddTransient<IAccessEmployee, AccessEmployee>();
             services.AddTransient<IAccessPassport, AccessPassport>();
 
+            services.AddTransient<IValidationEmployeeData, ValidationEmployeeData>();
+
             services.AddTransient<DatabaseManager>();
 
             services.AddTransient<IServiceOfEmployee, ServiceOfEmployee>();
-
 
 
         }

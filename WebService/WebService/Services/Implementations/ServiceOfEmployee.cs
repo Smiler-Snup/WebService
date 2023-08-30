@@ -7,6 +7,7 @@ using WebService.DataAccessLayer.Interfaces;
 using WebService.Services.Interfaces;
 using WebService.ViewModel;
 using WebService.Model;
+using WebService.OperationHandling;
 
 namespace WebService.Services.Implementations
 {
@@ -17,15 +18,15 @@ namespace WebService.Services.Implementations
         {
             DatabaseManager = databaseManager;
         }
-        public int? AddEmployee(EmployeeViewModel employeeViewModel)
+        public ResultOperation<int?, string> AddEmployee(EmployeeViewModel employeeViewModel)
         {
             var Company = DatabaseManager.ImplementationAccessCompany.FindByName(employeeViewModel.CompanyName);
             if (Company == null)
-                return null;
+                return ResultOperation<int?, string>.Error("Компания не была найдена по наименованию");
 
             var Department = DatabaseManager.ImplementationAccessDepartment.FindByName(employeeViewModel.DepartmentName);
             if (Department == null)
-                return null;
+                return ResultOperation<int?, string>.Error("Отдел не был найден по наименованию");
 
             var Employee = new Employee
             {
@@ -33,7 +34,7 @@ namespace WebService.Services.Implementations
                 Surname = employeeViewModel.Surname,
                 Phone = employeeViewModel.Phone,
                 CompanyId = Company.Id,
-                DepartmentID = Department.Id
+                DepartmentId = Department.Id
             };
 
             var Passport = new Passport
@@ -44,8 +45,34 @@ namespace WebService.Services.Implementations
 
             var IDEmployee = DatabaseManager.ImplementationAccessEmployee.AddEmployee(Employee, Passport);
 
-            return IDEmployee;
+            if(IDEmployee==null)
+                return ResultOperation<int?, string>.Error("Новый сотрудник не добавлен в систему, проверьте введенные данные");
 
+            return ResultOperation<int?, string>.Success(IDEmployee);
+
+        }
+
+        public ResultOperation<int?, string> DeleteEmployee(int Id)
+        {
+            if (!DatabaseManager.ImplementationAccessEmployee.DeleteEmployee(Id))
+                return ResultOperation<int?,string>.Error($"Сотрудника с ID:{Id} система не смогла удалить");
+
+            return ResultOperation<int?, string>.Success(Id);
+        }
+
+        public ResultOperation<IEnumerable<EmployeeViewModel>, string> GetEmployeesByCompany(string nameCompay)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ResultOperation<IEnumerable<EmployeeViewModel>, string> GetEmployeesByDepartment(string nameDepartment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ResultOperation<EmployeeViewModel, string> UpdateEmployye(EmployeeViewModel employeeViewModel)
+        {
+            throw new NotImplementedException();
         }
     }
 }

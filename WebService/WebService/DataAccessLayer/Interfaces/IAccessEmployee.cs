@@ -9,9 +9,9 @@ namespace WebService.DataAccessLayer.Interfaces
     public interface IAccessEmployee
     {
         int? AddEmployee(Employee employee,Passport passport);
-        void DeleteEmployee(int employeeId);
+        bool DeleteEmployee(int Id);
         IEnumerable<Employee> GetEmployeesByCompany(string companyName);
         IEnumerable<Employee> GetEmployeesByDepartment(string departmentName);
-        void UpdateEmployee(int employeeId, Employee employee);
+        bool UpdateEmployee(int employeeId, Employee employee);
     }
 }

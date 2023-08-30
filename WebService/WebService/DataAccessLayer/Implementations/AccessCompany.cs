@@ -11,6 +11,11 @@ namespace WebService.DataAccessLayer.Implementations
 {
     public class AccessCompany : IAccessCompany
     {
+        /// <summary>
+        /// По имени ищет из базы данных компанию
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public Company FindByName(string name)
         {
             using (var connection = new SqlConnection(Config.ConnectionString))
@@ -19,7 +24,7 @@ namespace WebService.DataAccessLayer.Implementations
 
                 var SqlCode = @"SELECT * FROM Company where Name=@name";
 
-                var company = connection.QuerySingleOrDefault<Company>(SqlCode,name);
+                var company = connection.QuerySingleOrDefault<Company>(SqlCode, new { name });
 
                 connection.Close();
 

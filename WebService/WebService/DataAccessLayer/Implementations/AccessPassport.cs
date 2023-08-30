@@ -19,7 +19,7 @@ namespace WebService.DataAccessLayer.Implementations
 
                 var SqlCode = @"SELECT * FROM Passport where Id=@id";
 
-                var passport = connection.QuerySingleOrDefault<Passport>(SqlCode, id);
+                var passport = connection.QuerySingleOrDefault<Passport>(SqlCode, new { id });
 
                 connection.Close();
 
