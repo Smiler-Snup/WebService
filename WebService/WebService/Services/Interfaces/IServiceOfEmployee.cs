@@ -8,8 +8,8 @@ namespace WebService.Services.Interfaces
     {
         public ResultOperation<int?, string> AddEmployee(EmployeeAddViewModel employeeViewModel);
         public ResultOperation<int?, string> DeleteEmployee(int Id);
-        public ResultOperation<IEnumerable<EmployeeOutputViewModel>, string> GetEmployeesByCompany(string nameCompay);
-        public ResultOperation<IEnumerable<EmployeeOutputViewModel>, string> GetEmployeesByDepartment(string nameDepartment);
+        public ResultOperation<IEnumerable<EmployeeOutputViewModel>, string> GetEmployeesByCompany(int idCompany);
+        public ResultOperation<IEnumerable<EmployeeOutputViewModel>, string> GetEmployeesByDepartment(int idCompany, int idDepartment);
         public ResultOperation<EmployeeUpdateViewModel, string> UpdateEmployye(int Id, EmployeeUpdateViewModel employeeViewModel);
     }
 }

@@ -9,7 +9,7 @@ namespace WebService.DataAccessLayer.Interfaces
         int? AddEmployee(EmployeeDTO employeeDTO);
         bool DeleteEmployee(int Id);
         IEnumerable<Employee> GetEmployeesByCompany(Company company);
-        IEnumerable<Employee> GetEmployeesByDepartment(Department department);
+        IEnumerable<Employee> GetEmployeesByDepartment(Company company,Department department);
         bool UpdateEmployee(EmployeeDTO employeeDTO);
     }
 }

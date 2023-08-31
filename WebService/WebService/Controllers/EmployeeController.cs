@@ -62,9 +62,9 @@ namespace WebService.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetByCompany")]
-        public async Task<ActionResult> GetByCompany([FromQuery] string nameCompany)
+        public async Task<ActionResult> GetByCompany([FromQuery] int idCompany)
         {
-            var resultOperation = ServiceOfEmployee.GetEmployeesByCompany(nameCompany);
+            var resultOperation = ServiceOfEmployee.GetEmployeesByCompany(idCompany);
 
             if (!resultOperation.IsSuccess)
                 return BadRequest(resultOperation.ErrorValue);
@@ -79,9 +79,9 @@ namespace WebService.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetByDepartment")]
-        public async Task<ActionResult> GetByDepartment([FromQuery] string nameDepartment)
+        public async Task<ActionResult> GetByDepartment([FromQuery] int idCompany, [FromQuery] int idDepartment)
         {
-            var resultOperation = ServiceOfEmployee.GetEmployeesByDepartment(nameDepartment);
+            var resultOperation = ServiceOfEmployee.GetEmployeesByDepartment(idCompany, idDepartment);
 
             if (!resultOperation.IsSuccess)
                 return BadRequest(resultOperation.ErrorValue);

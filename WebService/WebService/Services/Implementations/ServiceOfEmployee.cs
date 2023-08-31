@@ -17,19 +17,19 @@ namespace WebService.Services.Implementations
         }
         /// <summary>
         /// Добавляет сотрудника в систему
-        /// Внешние ключи для компании и отдела определяются по нахождению их по имени
+        /// Внешние ключи для компании и отдела определяются по нахождению их по уникальному идентификатору
         /// </summary>
         /// <param name="employeeViewModel"></param>
         /// <returns></returns>
         public ResultOperation<int?, string> AddEmployee(EmployeeAddViewModel employeeViewModel)
         {
-            var Company = DatabaseManager.ImplementationAccessCompany.FindByName(employeeViewModel.CompanyName);
+            var Company = DatabaseManager.ImplementationAccessCompany.FindById(employeeViewModel.IdCompany);
             if (Company == null)
-                return ResultOperation<int?, string>.Error("Компания не была найдена по наименованию");
+                return ResultOperation<int?, string>.Error("Компания не была найдена");
 
-            var Department = DatabaseManager.ImplementationAccessDepartment.FindByName(employeeViewModel.DepartmentName);
+            var Department = DatabaseManager.ImplementationAccessDepartment.FindById(employeeViewModel.IdDepartment);
             if (Department == null)
-                return ResultOperation<int?, string>.Error("Отдел не был найден по наименованию");
+                return ResultOperation<int?, string>.Error("Отдел не был найден");
 
             var Employee = new EmployeeDTO
             {
@@ -66,15 +66,15 @@ namespace WebService.Services.Implementations
 
         /// <summary>
         /// Возвращает коллекцию с информацией о сотрудниках, принадлежащих одной компании
-        /// Компания определяется по наименованию
+        /// Компания определяется по уникальному идентификатору
         /// </summary>
         /// <param name="nameCompay"></param>
         /// <returns></returns>
-        public ResultOperation<IEnumerable<EmployeeOutputViewModel>, string> GetEmployeesByCompany(string nameCompay)
+        public ResultOperation<IEnumerable<EmployeeOutputViewModel>, string> GetEmployeesByCompany(int idCompay)
         {
-            var company = DatabaseManager.ImplementationAccessCompany.FindByName(nameCompay);
+            var company = DatabaseManager.ImplementationAccessCompany.FindById(idCompay);
             if (company == null)
-                return ResultOperation<IEnumerable<EmployeeOutputViewModel>, string>.Error("Компания не была найдена по наименованию");
+                return ResultOperation<IEnumerable<EmployeeOutputViewModel>, string>.Error("Компания не была найдена");
 
             var employees = DatabaseManager.ImplementationAccessEmployee.GetEmployeesByCompany(company);
 
@@ -103,26 +103,30 @@ namespace WebService.Services.Implementations
         }
 
         /// <summary>
-        /// Возвращает коллекцию с информацией о сотрудниках, принадлежащих одному типу отдела
-        /// Отдел определяется по наименованию
+        /// Возвращает коллекцию с информацией о сотрудниках, принадлежащих одному отделу компании
+        /// Компания определяется по уникальному идентификатору
+        /// Отдел определяется по уникальному идентификатору
         /// </summary>
         /// <param name="nameDepartment"></param>
         /// <returns></returns>
-        public ResultOperation<IEnumerable<EmployeeOutputViewModel>, string> GetEmployeesByDepartment(string nameDepartment)
+        public ResultOperation<IEnumerable<EmployeeOutputViewModel>, string> GetEmployeesByDepartment(int idCompany, int idDepartment)
         {
-            var department = DatabaseManager.ImplementationAccessDepartment.FindByName(nameDepartment);
-            if (department == null)
-                return ResultOperation<IEnumerable<EmployeeOutputViewModel>, string>.Error("Отдел не был найден по наименованию");
+            var company = DatabaseManager.ImplementationAccessCompany.FindById(idCompany);
+            if (company == null)
+                return ResultOperation<IEnumerable<EmployeeOutputViewModel>, string>.Error("Компания не былы найдена");
 
-            var employees = DatabaseManager.ImplementationAccessEmployee.GetEmployeesByDepartment(department);
+            var department = DatabaseManager.ImplementationAccessDepartment.FindById(idDepartment);
+            if (department == null)
+                return ResultOperation<IEnumerable<EmployeeOutputViewModel>, string>.Error("Отдел не был найден");
+
+            var employees = DatabaseManager.ImplementationAccessEmployee.GetEmployeesByDepartment(company,department);
 
             var employeeViewModels = new List<EmployeeOutputViewModel>();
 
             foreach (var employee in employees)
             {
-                var passport = DatabaseManager.ImplementationAccessPassport.FindById(employee.Id);
 
-                var company = DatabaseManager.ImplementationAccessCompany.FindById(employee.CompanyId);
+                var passport = DatabaseManager.ImplementationAccessPassport.FindById(employee.Id);
 
                 employeeViewModels.Add(new EmployeeOutputViewModel
                 {
@@ -131,7 +135,7 @@ namespace WebService.Services.Implementations
                     Phone = employee.Phone,
                     DepartmentName = department.Name,
                     DepartmentPhone = department.Phone,
-                    CompanyName = company?.Name,
+                    CompanyName = company.Name,
                     Type = passport?.Type,
                     Number = passport?.Number
                 });
@@ -142,21 +146,27 @@ namespace WebService.Services.Implementations
         /// <summary>
         /// Обновляются поля сотрудника
         /// Сотрудник обновляется по Id
-        /// Внешние ключи по отделу и компании определяются по наименованию
-        /// Если наименования компании или отдела были переданы, но не были найдены, то операция возвращает ошибку
+        /// Внешние ключи по отделу и компании определяются по уникальному идентификатору
+        /// Если идентификаторы компании или отдела были переданы, но не были найдены, то операция возвращает ошибку
         /// </summary>
         /// <param name="Id"></param>
         /// <param name="employeeViewModel"></param>
         /// <returns></returns>
         public ResultOperation<EmployeeUpdateViewModel, string> UpdateEmployye(int Id, EmployeeUpdateViewModel employeeViewModel)
         {
-            var Company = DatabaseManager.ImplementationAccessCompany.FindByName(employeeViewModel.CompanyName);
-            if(employeeViewModel.CompanyName!=null && Company==null)
-                return ResultOperation<EmployeeUpdateViewModel, string>.Error("Невозможно обновить компанию сотрудника, так как указанная компания не найдена в базе данных.");
+            if (employeeViewModel.IdCompany != null)
+            {
+                var Company = DatabaseManager.ImplementationAccessCompany.FindById((int)employeeViewModel.IdCompany);
+                if (Company == null)
+                    return ResultOperation<EmployeeUpdateViewModel, string>.Error("Невозможно обновить компанию сотрудника, так как указанная компания не найдена в базе данных.");
+            }
 
-            var Department = DatabaseManager.ImplementationAccessDepartment.FindByName(employeeViewModel.DepartmentName);
-            if (employeeViewModel.DepartmentName != null && Department == null)
-                return ResultOperation<EmployeeUpdateViewModel, string>.Error("Невозможно обновить отдел сотрудника, так как указанный отдел не найден в базе данных.");
+            if (employeeViewModel.IdDepartment != null)
+            {
+                var Department = DatabaseManager.ImplementationAccessDepartment.FindById((int)employeeViewModel.IdDepartment);
+                if (Department == null)
+                    return ResultOperation<EmployeeUpdateViewModel, string>.Error("Невозможно обновить отдел сотрудника, так как указанный отдел не найден в базе данных.");
+            }
 
             var Employee = new EmployeeDTO
             {
@@ -164,8 +174,8 @@ namespace WebService.Services.Implementations
                 Name = employeeViewModel?.Name,
                 Surname = employeeViewModel?.Surname,
                 Phone = employeeViewModel?.Phone,
-                CompanyId = Company?.Id,
-                DepartmentId = Department?.Id,
+                CompanyId = employeeViewModel.IdCompany,
+                DepartmentId = employeeViewModel.IdDepartment,
                 Number = employeeViewModel?.Number,
                 Type = employeeViewModel?.Type
             };

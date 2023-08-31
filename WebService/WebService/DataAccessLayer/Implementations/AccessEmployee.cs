@@ -127,15 +127,15 @@ namespace WebService.DataAccessLayer.Implementations
         /// </summary>
         /// <param name="department"></param>
         /// <returns></returns>
-        public IEnumerable<Employee> GetEmployeesByDepartment(Department department)
+        public IEnumerable<Employee> GetEmployeesByDepartment(Company company,Department department)
         {
             using (var connection = new SqlConnection(Config.ConnectionString))
             {
                 connection.Open();
 
-                var SqlCodeSelectEmployees = @"SELECT * FROM Employee WHERE DepartmentId = @DepartmentId";
+                var SqlCodeSelectEmployees = @"SELECT * FROM Employee WHERE CompanyId = @CompanyId and DepartmentId = @DepartmentId";
 
-                var result = connection.Query<Employee>(SqlCodeSelectEmployees, new { DepartmentId = department.Id });
+                var result = connection.Query<Employee>(SqlCodeSelectEmployees, new { CompanyId = company.Id, DepartmentId = department.Id });
 
                 return result;
             }

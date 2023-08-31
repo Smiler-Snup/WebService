@@ -12,9 +12,9 @@ namespace WebService.ViewModel
         [Required]
         public override string Phone { get; set; }
         [Required]
-        public override string CompanyName { get; set; }
+        public int IdCompany { get; set; }
         [Required]
-        public override string DepartmentName { get; set; }
+        public int IdDepartment { get; set; }
         [Required]
         public override string Type { get; set; }
         [Required]
