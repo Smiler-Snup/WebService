@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WebService.Services.Interfaces;
 using WebService.Services.Validation.Interfaces;
@@ -23,7 +20,7 @@ namespace WebService.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Add([FromBody] EmployeeViewModel employeeViewModel)
+        public async Task<ActionResult> Add([FromBody] EmployeeAddViewModel employeeViewModel)
         {
             var resultValidation = ValidationEmployeeData.IsValid(employeeViewModel);
 
@@ -39,14 +36,50 @@ namespace WebService.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete([FromBody] int Id)
+        public async Task<ActionResult> Delete([FromBody] int id)
         {
-            var resultOperation = ServiceOfEmployee.DeleteEmployee(Id);
+            var resultOperation = ServiceOfEmployee.DeleteEmployee(id);
 
             if (!resultOperation.IsSuccess)
                 return BadRequest(resultOperation.ErrorValue);
 
             return Ok("Удаление успешно было произведено");
         }
+
+        [HttpGet]
+        [Route("GetByCompany")]
+        public async Task<ActionResult> GetByCompany([FromQuery] string nameCompany)
+        {
+            var resultOperation = ServiceOfEmployee.GetEmployeesByCompany(nameCompany);
+
+            if (!resultOperation.IsSuccess)
+                return BadRequest(resultOperation.ErrorValue);
+
+            return Ok(resultOperation.SuccessValue);
+        }
+
+        [HttpGet]
+        [Route("GetByDepartment")]
+        public async Task<ActionResult> GetByDepartment([FromQuery] string nameDepartment)
+        {
+            var resultOperation = ServiceOfEmployee.GetEmployeesByDepartment(nameDepartment);
+
+            if (!resultOperation.IsSuccess)
+                return BadRequest(resultOperation.ErrorValue);
+
+            return Ok(resultOperation.SuccessValue);
+        }
+        [HttpPut]
+        public async Task<ActionResult> Update([FromQuery] int Id, [FromBody] EmployeeUpdateViewModel employeeViewModel)
+        {
+
+            var resultOperation = ServiceOfEmployee.UpdateEmployye(Id,employeeViewModel);
+
+            if (!resultOperation.IsSuccess)
+                return BadRequest(resultOperation.ErrorValue);
+
+            return Ok(resultOperation.SuccessValue);
+        }
+
     }
 }

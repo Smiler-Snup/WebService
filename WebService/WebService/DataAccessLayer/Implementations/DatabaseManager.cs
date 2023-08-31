@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WebService.DataAccessLayer.Interfaces;
+﻿using WebService.DataAccessLayer.Interfaces;
 
 namespace WebService.DataAccessLayer.Implementations
 {
+    /// <summary>
+    /// Класс собирает всю логику по взаимодействию с базой данных
+    /// </summary>
     public class DatabaseManager
     {
         public readonly IAccessCompany ImplementationAccessCompany;

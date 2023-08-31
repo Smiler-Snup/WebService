@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WebService.Services.Validation.Interfaces;
+﻿using WebService.Services.Validation.Interfaces;
 using WebService.OperationHandling;
-using WebService.ViewModel;
 using System.Text.RegularExpressions;
+using WebService.ViewModel.Base;
 
 namespace WebService.Services.Validation.Implementations
 {
     public class ValidationEmployeeData : IValidationEmployeeData
     {
-        public ResultOperation<EmployeeViewModel,string> IsValid(EmployeeViewModel employeeViewModel)
+        public ResultOperation<EmployeeBaseViewModel, string> IsValid(EmployeeBaseViewModel employeeViewModel)
         {
             if(employeeViewModel==null)
             {
-                return ResultOperation<EmployeeViewModel, string>.Error("Данные некорректны");
+                return ResultOperation<EmployeeBaseViewModel, string>.Error("Данные некорректны");
             }
 
             if(!IsValidPhoneFormat(employeeViewModel.Phone))
             {
-                return ResultOperation<EmployeeViewModel, string>.Error("Номер телефона может содержать только символы: цифры,+,-");
+                return ResultOperation<EmployeeBaseViewModel, string>.Error("Номер телефона может содержать только символы: цифры,+,-");
             }
 
-            return ResultOperation<EmployeeViewModel, string>.Success(employeeViewModel);
+            return ResultOperation<EmployeeBaseViewModel, string>.Success(employeeViewModel);
 
         }
 

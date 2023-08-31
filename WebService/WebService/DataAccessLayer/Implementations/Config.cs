@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WebService.DataAccessLayer.Implementations
+﻿namespace WebService.DataAccessLayer.Implementations
 {
+    /// <summary>
+    /// Класс хранит данные для подключения к базе данных
+    /// </summary>
     public class Config
     {
         public static string ConnectionString { get; set; }

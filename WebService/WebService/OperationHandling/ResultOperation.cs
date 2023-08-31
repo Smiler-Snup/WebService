@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WebService.OperationHandling
+﻿namespace WebService.OperationHandling
 {
     public class ResultOperation<TSuccess, TError>
     {
