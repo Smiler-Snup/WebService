@@ -18,7 +18,11 @@ namespace WebService.Controllers
             ValidationEmployeeData = validationEmployeeData;
         }
 
-
+        /// <summary>
+        /// Добавляет нового сотрудника в систему
+        /// </summary>
+        /// <param name="employeeViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> Add([FromBody] EmployeeAddViewModel employeeViewModel)
         {
@@ -35,6 +39,11 @@ namespace WebService.Controllers
             return Ok(resultOperation.SuccessValue);
         }
 
+        /// <summary>
+        /// Удаляет сотрудника по уникальному идентификатору
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         public async Task<ActionResult> Delete([FromBody] int id)
         {
@@ -46,6 +55,11 @@ namespace WebService.Controllers
             return Ok("Удаление успешно было произведено");
         }
 
+        /// <summary>
+        /// Возвращает сотрудников, которые принадлежат одной компании
+        /// </summary>
+        /// <param name="nameCompany"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetByCompany")]
         public async Task<ActionResult> GetByCompany([FromQuery] string nameCompany)
@@ -58,6 +72,11 @@ namespace WebService.Controllers
             return Ok(resultOperation.SuccessValue);
         }
 
+        /// <summary>
+        /// Возвращает сотрудников, которые принадлежат одному типу отделу
+        /// </summary>
+        /// <param name="nameDepartment"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetByDepartment")]
         public async Task<ActionResult> GetByDepartment([FromQuery] string nameDepartment)
@@ -69,6 +88,13 @@ namespace WebService.Controllers
 
             return Ok(resultOperation.SuccessValue);
         }
+
+        /// <summary>
+        /// Обновляет поля сотрудника. Поиск сотрудника осуществляется по уникальному идентификатору
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="employeeViewModel"></param>
+        /// <returns></returns>
         [HttpPut]
         public async Task<ActionResult> Update([FromQuery] int Id, [FromBody] EmployeeUpdateViewModel employeeViewModel)
         {
