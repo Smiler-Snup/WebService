@@ -3,6 +3,9 @@ using WebService.ViewModel.Base;
 
 namespace WebService.ViewModel
 {
+    /// <summary>
+    /// Класс представляет данные, которые будут использованы при создании нового сотрудника
+    /// </summary>
     public class EmployeeAddViewModel:EmployeeBaseViewModel
     {
         [Required]

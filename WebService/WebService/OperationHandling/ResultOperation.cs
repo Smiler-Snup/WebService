@@ -1,5 +1,11 @@
 ﻿namespace WebService.OperationHandling
 {
+    /// <summary>
+    /// Класс хранит результат выполнения операции
+    /// Результат может являться успешным или ошибочным
+    /// </summary>
+    /// <typeparam name="TSuccess"></typeparam>
+    /// <typeparam name="TError"></typeparam>
     public class ResultOperation<TSuccess, TError>
     {
         public bool IsSuccess { get; }

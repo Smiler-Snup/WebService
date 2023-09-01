@@ -174,8 +174,8 @@ namespace WebService.Services.Implementations
                 Name = employeeViewModel?.Name,
                 Surname = employeeViewModel?.Surname,
                 Phone = employeeViewModel?.Phone,
-                CompanyId = employeeViewModel.IdCompany,
-                DepartmentId = employeeViewModel.IdDepartment,
+                CompanyId = employeeViewModel?.IdCompany,
+                DepartmentId = employeeViewModel?.IdDepartment,
                 Number = employeeViewModel?.Number,
                 Type = employeeViewModel?.Type
             };
